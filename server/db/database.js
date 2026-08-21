@@ -99,6 +99,7 @@ const attemptSchema = new mongoose.Schema({
   created_at: { type: Date, default: Date.now }
 });
 attemptSchema.index({ candidate_id: 1, exam_id: 1 }, { unique: true });
+attemptSchema.index({ exam_id: 1 });
 
 const answerSchema = new mongoose.Schema({
   attempt_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Attempt', required: true },
@@ -149,7 +150,7 @@ const AuditLog = mongoose.model('AuditLog', auditLogSchema);
 // Connection helper
 async function initDb() {
   if (mongoose.connection.readyState === 0) {
-    await mongoose.connect(config.MONGODB_URI);
+    await mongoose.connect(config.MONGODB_URI, { maxPoolSize: 2 });
   }
 
   // Seed standard exam types
