@@ -80,10 +80,10 @@ async function loadAllMetadata() {
     examTypesList = Array.isArray(tRes) ? tRes : [];
 
     // Populate dropdowns in Modal
-    populateSelect('examYear', yearsList);
-    populateSelect('examGrade', gradesList);
-    populateSelect('examSubject', subjectsList);
-    populateSelect('examType', examTypesList);
+    populateModalSelect('examYear', yearsList);
+    populateModalSelect('examGrade', gradesList);
+    populateModalSelect('examSubject', subjectsList);
+    populateModalSelect('examType', examTypesList);
 
     loadExamsTable(); // initial load
   } catch (err) {
@@ -97,6 +97,15 @@ function populateSelect(elemId, list, defaultText = '-- Select --') {
   select.innerHTML = `<option value="">${defaultText}</option>`;
   list.forEach(item => {
     select.innerHTML += `<option value="${item.id}">${item.name}</option>`;
+  });
+}
+
+function populateModalSelect(elemId, list, defaultText = '-- Select --') {
+  const select = document.getElementById(elemId);
+  if (!select) return;
+  select.innerHTML = `<option value="">${defaultText}</option>`;
+  list.forEach(item => {
+    select.innerHTML += `<option value="${item.name}">${item.name}</option>`;
   });
 }
 
