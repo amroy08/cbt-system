@@ -484,26 +484,8 @@
       pSubmitMsg.innerText = 'Your examination has been submitted successfully.';
     }
 
-    // Render results if configured and available
-    if (showResult && result) {
-      resTotalQ.innerText = result.totalQuestions;
-      resAttempted.innerText = result.attempted;
-      resUnanswered.innerText = result.unanswered;
-      resObtained.innerText = result.obtainedMarks;
-      resTotalMarks.innerText = result.totalMarks;
-      resPercentage.innerText = result.percentage;
-      
-      if (result.passed) {
-        resPassBadge.innerText = 'PASSED';
-        resPassBadge.className = 'badge badge-success';
-      } else {
-        resPassBadge.innerText = 'FAILED';
-        resPassBadge.className = 'badge badge-danger';
-      }
-      divScoreSummary.style.display = 'block';
-    } else {
-      divScoreSummary.style.display = 'none';
-    }
+    // Unconditionally hide score summary from student upon submission
+    divScoreSummary.style.display = 'none';
 
     // Clean session
     sessionStorage.clear();

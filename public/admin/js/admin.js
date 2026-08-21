@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initResultsDashboard();
   initBackupsAndLogs();
 
+  // Populate exams table on startup
+  loadExamsTable();
+
   // Logout button
   document.getElementById('btnLogout').addEventListener('click', () => {
     fetch('/api/auth/logout', { method: 'POST' })
@@ -189,8 +192,8 @@ async function loadExamsTable() {
         <td>${ex.question_count} Qs</td>
         <td><span class="badge ${ex.status === 'Open' ? 'badge-success' : ex.status === 'Closed' ? 'badge-danger' : 'badge-warning'}">${ex.status}</span></td>
         <td>
-          <button class="btn btn-warning" style="padding: 3px 8px; font-size: 12px;" onclick="editExam(${ex.id})">Edit</button>
-          <button class="btn btn-danger" style="padding: 3px 8px; font-size: 12px;" onclick="deleteExam(${ex.id})">Del</button>
+          <button class="btn btn-warning" style="padding: 3px 8px; font-size: 12px;" onclick="editExam('${ex.id}')">Edit</button>
+          <button class="btn btn-danger" style="padding: 3px 8px; font-size: 12px;" onclick="deleteExam('${ex.id}')">Del</button>
         </td>
       `;
       tblExamsBody.appendChild(tr);
