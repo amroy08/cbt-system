@@ -3,15 +3,19 @@ const fs = require('fs');
 const path = require('path');
 const config = require('../config/config');
 
-// Ensure parent directories exist
-if (!fs.existsSync(config.BACKUP_PATH)) {
-  fs.mkdirSync(config.BACKUP_PATH, { recursive: true });
-}
-if (!fs.existsSync(path.resolve('uploads'))) {
-  fs.mkdirSync(path.resolve('uploads'), { recursive: true });
-}
-if (!fs.existsSync(path.resolve('exports'))) {
-  fs.mkdirSync(path.resolve('exports'), { recursive: true });
+// Ensure parent directories exist (with safety for read-only Vercel serverless systems)
+try {
+  if (!fs.existsSync(config.BACKUP_PATH)) {
+    fs.mkdirSync(config.BACKUP_PATH, { recursive: true });
+  }
+  if (!fs.existsSync(config.UPLOADS_PATH)) {
+    fs.mkdirSync(config.UPLOADS_PATH, { recursive: true });
+  }
+  if (!fs.existsSync(config.EXPORTS_PATH)) {
+    fs.mkdirSync(config.EXPORTS_PATH, { recursive: true });
+  }
+} catch (err) {
+  console.warn('Temporary directories creation skipped (read-only filesystem):', err.message);
 }
 
 // 1. SCHEMAS

@@ -8,11 +8,16 @@ const { requireAdmin } = require('../middleware/authMiddleware');
 const { Exam, Question, Attempt } = require('../db/database');
 const { parseQuestionPaper, importQuestionsTransaction } = require('../services/questionImportService');
 const { logEvent } = require('../utils/auditLogger');
+const config = require('../config/config');
 
 // Configure Multer for secure file upload
-const uploadDir = path.resolve('uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+const uploadDir = config.UPLOADS_PATH;
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (err) {
+  console.warn('Multer upload directory creation skipped:', err.message);
 }
 
 const storage = multer.diskStorage({
