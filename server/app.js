@@ -1,5 +1,6 @@
 const express = require('express');
 const session = require('express-session');
+const { MongoStore } = require('connect-mongo');
 const path = require('path');
 const os = require('os');
 const config = require('./config/config');
@@ -11,11 +12,16 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Configure session
+// Configure session with MongoDB Store for cloud serverless deployment compatibility
 app.use(session({
   secret: config.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: config.MONGODB_URI,
+    collectionName: 'sessions',
+    ttl: 14 * 24 * 60 * 60 // 14 days session life
+  }),
   cookie: {
     httpOnly: true,
     sameSite: 'strict',

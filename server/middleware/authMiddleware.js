@@ -3,8 +3,8 @@ function requireAdmin(req, res, next) {
     return next();
   }
   
-  // Check if API request
-  if (req.xhr || req.path.startsWith('/api/') || (req.headers.accept && req.headers.accept.indexOf('json') !== -1)) {
+  // Check if API request (check absolute originalUrl)
+  if (req.xhr || (req.originalUrl && req.originalUrl.startsWith('/api/')) || (req.headers.accept && req.headers.accept.indexOf('json') !== -1)) {
     return res.status(401).json({ error: 'Unauthorized: Admin session required' });
   }
   
