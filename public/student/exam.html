@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Examination Portal - CBT System</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .exam-header {
+      background-color: #0056b3;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .exam-header h2 {
+      margin: 0;
+      font-size: 1.4rem;
+    }
+    .student-info {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .timer-box {
+      background-color: #ffc107;
+      color: #212529;
+      padding: 8px 15px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .exam-layout {
+      display: flex;
+      margin: 20px;
+      gap: 20px;
+      min-height: 500px;
+    }
+    .question-panel {
+      flex: 3;
+      background: white;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .palette-panel {
+      flex: 1;
+      background: white;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    .question-text {
+      font-size: 1.2rem;
+      font-weight: 500;
+      margin-bottom: 20px;
+      white-space: pre-line;
+    }
+    .option-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0 0 30px 0;
+    }
+    .option-item {
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      padding: 15px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-size: 1.05rem;
+    }
+    .option-item:hover {
+      background-color: #f1f3f5;
+    }
+    .option-item input[type="radio"] {
+      margin-right: 15px;
+      transform: scale(1.3);
+    }
+    .option-item.selected {
+      border-color: #0056b3;
+      background-color: #e8f4fd;
+    }
+    .control-buttons {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid #dee2e6;
+      padding-top: 20px;
+    }
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+      margin-bottom: 25px;
+    }
+    .palette-btn {
+      width: 100%;
+      padding: 10px 0;
+      font-size: 14px;
+      font-weight: bold;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+    }
+    /* Palette States */
+    .palette-btn.not-visited {
+      background-color: #fff;
+      color: #333;
+      border-color: #ced4da;
+    }
+    .palette-btn.not-answered {
+      background-color: #dc3545;
+      color: white;
+      border-color: #dc3545;
+    }
+    .palette-btn.answered {
+      background-color: #28a745;
+      color: white;
+      border-color: #28a745;
+    }
+    .palette-btn.marked-review {
+      background-color: #6f42c1;
+      color: white;
+      border-color: #6f42c1;
+    }
+    .palette-btn.answered-marked-review {
+      background-color: #007bff;
+      color: white;
+      border-color: #007bff;
+    }
+    .palette-btn.current {
+      border: 3px double #333 !important;
+    }
+    .palette-legend {
+      font-size: 12px;
+      line-height: 1.8;
+      border-top: 1px solid #eee;
+      padding-top: 15px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .legend-box {
+      width: 15px;
+      height: 15px;
+      border-radius: 3px;
+      margin-right: 10px;
+      border: 1px solid #ccc;
+    }
+    /* Confirm Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+      background-color: white;
+      margin: 15% auto;
+      padding: 25px;
+      border-radius: 4px;
+      max-width: 500px;
+      text-align: center;
+    }
+    .modal-content h3 {
+      margin-top: 0;
+      color: #0056b3;
+    }
+    .modal-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Instructions Intro Page -->
+  <div id="instructionsView" class="container">
+    <div class="card" style="margin-top: 50px;">
+      <h2 id="instExamTitle" style="color: #0056b3;">Exam Title</h2>
+      <hr>
+      <div style="margin: 20px 0;">
+        <h3>Instructions to Candidates:</h3>
+        <div id="instructionsText" style="white-space: pre-wrap; font-size: 15px; color: #555;">
+          No instructions provided.
+        </div>
+      </div>
+      <div style="background-color: #e9ecef; padding: 15px; border-radius: 4px; font-size: 14px; margin-bottom: 25px;">
+        <strong>Candidate Name:</strong> <span id="instName">-</span> | 
+        <strong>Roll Number:</strong> <span id="instRoll">-</span> | 
+        <strong>Class:</strong> <span id="instGrade">-</span> | 
+        <strong>Division:</strong> <span id="instDiv">-</span>
+      </div>
+      <button id="startExamBtn" class="btn" style="padding: 12px 30px; font-size: 16px;">I Have Read the Instructions & Start Exam</button>
+    </div>
+  </div>
+
+  <!-- Primary Exam Interface -->
+  <div id="examView" style="display: none;">
+    <div class="exam-header">
+      <div>
+        <h2 id="examHeaderTitle">Exam Title</h2>
+        <div class="student-info" style="margin-top: 5px;">
+          <strong>Candidate:</strong> <span id="lblStudentName">-</span> | 
+          <strong>Roll No:</strong> <span id="lblRollNumber">-</span> | 
+          <strong>Grade/Div:</strong> <span id="lblGradeDiv">-</span>
+        </div>
+      </div>
+      <div class="timer-box">
+        Remaining: <span id="timerDisplay">00:00</span>
+      </div>
+    </div>
+
+    <div class="exam-layout">
+      <!-- Question Content Panel -->
+      <div class="question-panel">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">
+            <h3 style="margin: 0; color: #333;" id="lblQuestionNumber">Question 1</h3>
+            <span class="badge badge-info" id="lblQuestionMarks">1 Mark</span>
+          </div>
+
+          <div class="question-text" id="divQuestionText">
+            Question text goes here.
+          </div>
+
+          <ul class="option-list">
+            <li class="option-item" onclick="selectOption('A')">
+              <input type="radio" name="mcqOption" id="optA" value="A">
+              <label for="optA" style="width: 100%; cursor: pointer;" id="lblOptA">Option A</label>
+            </li>
+            <li class="option-item" onclick="selectOption('B')">
+              <input type="radio" name="mcqOption" id="optB" value="B">
+              <label for="optB" style="width: 100%; cursor: pointer;" id="lblOptB">Option B</label>
+            </li>
+            <li class="option-item" onclick="selectOption('C')">
+              <input type="radio" name="mcqOption" id="optC" value="C">
+              <label for="optC" style="width: 100%; cursor: pointer;" id="lblOptC">Option C</label>
+            </li>
+            <li class="option-item" onclick="selectOption('D')">
+              <input type="radio" name="mcqOption" id="optD" value="D">
+              <label for="optD" style="width: 100%; cursor: pointer;" id="lblOptD">Option D</label>
+            </li>
+          </ul>
+        </div>
+
+        <div class="control-buttons">
+          <div>
+            <button class="btn btn-secondary" id="btnPrev">Previous</button>
+            <button class="btn btn-warning" id="btnMark">Mark for Review</button>
+            <button class="btn btn-secondary" id="btnClear" style="color: #333; background-color: #e2e6ea; border-color: #dae0e5;">Clear Response</button>
+          </div>
+          <div>
+            <button class="btn btn-success" id="btnSaveNext">Save & Next</button>
+            <button class="btn btn-danger" id="btnSubmit">Submit Exam</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Palette Panel -->
+      <div class="palette-panel">
+        <h3 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">Question Palette</h3>
+        
+        <div class="palette-grid" id="divPaletteGrid">
+          <!-- Buttons generated by JS -->
+        </div>
+
+        <div class="palette-legend">
+          <div class="legend-item">
+            <div class="legend-box" style="background-color: #fff;"></div> Not Visited
+          </div>
+          <div class="legend-item">
+            <div class="legend-box" style="background-color: #dc3545;"></div> Not Answered
+          </div>
+          <div class="legend-item">
+            <div class="legend-box" style="background-color: #28a745;"></div> Answered
+          </div>
+          <div class="legend-item">
+            <div class="legend-box" style="background-color: #6f42c1;"></div> Marked for Review
+          </div>
+          <div class="legend-item">
+            <div class="legend-box" style="background-color: #007bff;"></div> Answered + Marked for Review
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submission Confirmation / Result Page -->
+  <div id="submissionView" class="container" style="display: none;">
+    <div class="card" style="margin-top: 50px; text-align: center; padding: 40px;">
+      <h2 style="color: #28a745;">Submission Successful</h2>
+      <p style="font-size: 18px; margin: 20px 0;" id="pSubmitMsg">Your examination has been submitted successfully.</p>
+      
+      <div id="divScoreSummary" style="display: none; background-color: #e9ecef; padding: 25px; border-radius: 4px; max-width: 500px; margin: 30px auto; text-align: left;">
+        <h3 style="margin-top: 0; color: #0056b3; text-align: center;">Examination Results</h3>
+        <hr>
+        <p><strong>Total Questions:</strong> <span id="resTotalQ">-</span></p>
+        <p><strong>Attempted:</strong> <span id="resAttempted">-</span></p>
+        <p><strong>Unanswered:</strong> <span id="resUnanswered">-</span></p>
+        <p><strong>Obtained Marks:</strong> <span id="resObtained">-</span></p>
+        <p><strong>Total Marks:</strong> <span id="resTotalMarks">-</span></p>
+        <p><strong>Percentage:</strong> <span id="resPercentage">-</span>%</p>
+        <p><strong>Result:</strong> <span id="resPassBadge" class="badge">-</span></p>
+      </div>
+
+      <a href="login.html" class="btn" style="padding: 10px 25px; margin-top: 20px;">Return to Login</a>
+    </div>
+  </div>
+
+  <!-- Submit Confirmation Modal -->
+  <div id="confirmModal" class="modal">
+    <div class="modal-content">
+      <h3>Submit Examination?</h3>
+      <p>Are you sure you want to submit your exam? You cannot modify your answers after submission.</p>
+      <div style="background-color: #f8f9fa; padding: 15px; border-radius: 4px; margin: 15px 0; text-align: left; font-size: 14px;">
+        <strong>Total Questions:</strong> <span id="cntTotal">-</span><br>
+        <strong>Answered:</strong> <span id="cntAnswered">-</span><br>
+        <strong>Marked for Review:</strong> <span id="cntReview">-</span><br>
+        <strong>Unanswered:</strong> <span id="cntUnanswered">-</span>
+      </div>
+      <div class="modal-buttons">
+        <button class="btn btn-secondary" id="btnCancelSubmit">Go Back</button>
+        <button class="btn btn-danger" id="btnConfirmSubmit">Confirm Submission</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/student-exam.js"></script>
+</body>
+</html>

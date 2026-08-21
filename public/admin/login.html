@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Admin Login - CBT System</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <style>
+    .login-container {
+      max-width: 450px;
+      margin: 100px auto;
+      padding: 0 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <div class="card">
+      <h2 style="text-align: center; color: #0056b3; margin-top: 0;">Teacher Dashboard</h2>
+      <p style="text-align: center; color: #666; font-size: 14px;">Administrator Sign In</p>
+      <hr>
+
+      <div id="errorBox" class="badge badge-danger" style="display: none; padding: 10px; width: 100%; box-sizing: border-box; margin-bottom: 15px; border-radius: 4px;"></div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" class="form-control" placeholder="Admin username" required autocomplete="off">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" class="form-control" placeholder="Password" required>
+        </div>
+
+        <button type="submit" class="btn" style="width: 100%; padding: 10px; margin-top: 10px;">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // First-run setup redirect check
+    fetch('/api/auth/setup-check')
+      .then(res => res.json())
+      .then(data => {
+        if (data.setupRequired) {
+          window.location.href = 'setup.html';
+        }
+      });
+
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const errorBox = document.getElementById('errorBox');
+      errorBox.style.display = 'none';
+
+      fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          window.location.href = 'dashboard.html';
+        } else {
+          errorBox.innerText = data.error || 'Authentication failed.';
+          errorBox.style.display = 'block';
+        }
+      })
+      .catch(() => {
+        errorBox.innerText = 'Connection error.';
+        errorBox.style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>

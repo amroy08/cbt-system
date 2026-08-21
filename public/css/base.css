@@ -1,0 +1,146 @@
+/* Base Design for CBT - Light & Clean */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f4f6f8;
+  color: #333333;
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+
+header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e1e4e6;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 {
+  font-size: 1.2rem;
+  margin: 0;
+  color: #0056b3;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e1e4e6;
+  border-radius: 4px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.btn {
+  display: inline-block;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid transparent;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 4px;
+  color: #ffffff;
+  background-color: #0056b3;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background-color: #004085;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+}
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+}
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+.btn-warning:hover {
+  background-color: #e0a800;
+}
+
+.btn-success {
+  background-color: #28a745;
+}
+.btn-success:hover {
+  background-color: #218838;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #495057;
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.form-control:focus {
+  border-color: #80bdff;
+  outline: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+table th, table td {
+  border: 1px solid #dee2e6;
+  padding: 10px;
+  text-align: left;
+  font-size: 14px;
+}
+
+table th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 12px;
+}
+.badge-success { background-color: #d4edda; color: #155724; }
+.badge-danger { background-color: #f8d7da; color: #721c24; }
+.badge-warning { background-color: #fff3cd; color: #856404; }
+.badge-info { background-color: #d1ecf1; color: #0c5460; }

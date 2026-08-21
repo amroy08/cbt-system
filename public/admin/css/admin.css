@@ -1,0 +1,194 @@
+/* Admin Dashboard CSS */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f0f2f5;
+  margin: 0;
+  padding: 0;
+}
+
+header.admin-header {
+  background-color: #343a40;
+  color: white;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header.admin-header h1 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.admin-container {
+  display: flex;
+  min-height: calc(100vh - 60px);
+}
+
+aside.admin-sidebar {
+  width: 240px;
+  background-color: #212529;
+  color: #adb5bd;
+  padding: 20px 0;
+}
+
+aside.admin-sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+aside.admin-sidebar li a {
+  display: block;
+  padding: 12px 20px;
+  color: #adb5bd;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+aside.admin-sidebar li a:hover, aside.admin-sidebar li a.active {
+  color: white;
+  background-color: #343a40;
+  border-left: 4px solid #007bff;
+}
+
+main.admin-content {
+  flex: 1;
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+.dashboard-section {
+  display: none;
+}
+
+.dashboard-section.active {
+  display: block;
+}
+
+.admin-card {
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.admin-card h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #343a40;
+  border-bottom: 1px solid #f1f3f5;
+  padding-bottom: 10px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.stat-box {
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.stat-box h4 {
+  margin: 0 0 10px 0;
+  color: #6c757d;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.stat-box .number {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #007bff;
+}
+
+/* Modal styling */
+.admin-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  overflow-y: auto;
+}
+
+.admin-modal-content {
+  background-color: white;
+  margin: 8% auto;
+  padding: 25px;
+  border-radius: 4px;
+  width: 70%;
+  max-width: 800px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.admin-modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.modal-close {
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: #dc3545;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.alert {
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+/* Question Import Preview table */
+.q-preview-card {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  padding: 15px;
+}
+.q-preview-card.invalid {
+  border-color: #dc3545;
+  background-color: #fff8f8;
+}
+.q-preview-card.duplicate {
+  border-color: #ffc107;
+  background-color: #fffdf5;
+}

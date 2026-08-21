@@ -1,0 +1,26 @@
+{
+  "name": "school-cbt",
+  "version": "1.0.0",
+  "description": "Offline School Computer-Based Test (CBT) System",
+  "main": "server/app.js",
+  "scripts": {
+    "start": "node server/app.js",
+    "test": "node tests/run-tests.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "mammoth": "^1.7.2",
+    "multer": "^1.4.5-lts.1",
+    "pdf-parse": "^1.1.1",
+    "mongoose": "^8.2.0"
+  },
+  "devDependencies": {
+    "supertest": "^6.3.4"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  }
+}
