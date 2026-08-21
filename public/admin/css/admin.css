@@ -192,3 +192,26 @@ main.admin-content {
   border-color: #ffc107;
   background-color: #fffdf5;
 }
+
+/* Exams Table layout refinements */
+#tblExams {
+  width: 100%;
+  table-layout: auto;
+}
+#tblExams th, #tblExams td {
+  padding: 12px 8px;
+  vertical-align: middle;
+}
+#tblExams th:nth-child(1), #tblExams td:nth-child(1) {
+  min-width: 180px; /* Exam Title gets more space */
+}
+#tblExams th:not(:nth-child(1)):not(:nth-child(4)),
+#tblExams td:not(:nth-child(1)):not(:nth-child(4)) {
+  white-space: nowrap; /* Keep other columns on one line */
+}
+#tblExams .btn {
+  padding: 4px 8px;
+  margin: 2px 0;
+  font-size: 12px;
+}
+
