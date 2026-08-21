@@ -181,7 +181,11 @@
             </div>
             <div class="form-group" style="margin-bottom: 0; width: 120px;">
               <label for="resultsDivisionSelect">Division</label>
-              <input type="text" id="resultsDivisionSelect" class="form-control" placeholder="All">
+              <select id="resultsDivisionSelect" class="form-control">
+                <option value="">All</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+              </select>
             </div>
             <button class="btn" id="btnFilterResults">Get Results</button>
             <button class="btn btn-success" id="btnExportCSV" style="display: none;">Export Results CSV</button>

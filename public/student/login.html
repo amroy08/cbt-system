@@ -75,7 +75,11 @@
 
         <div class="form-group">
           <label for="studentDivision">Division / Section</label>
-          <input type="text" id="studentDivision" class="form-control" placeholder="e.g. A" required autocomplete="off">
+          <select id="studentDivision" class="form-control" required>
+            <option value="" disabled selected>Select Division</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+          </select>
         </div>
 
         <div class="form-group">
