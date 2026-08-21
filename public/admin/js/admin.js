@@ -762,23 +762,89 @@ async function loadAcademicSettings() {
 
     // Years
     const tbodyY = document.querySelector('#tblYears tbody');
-    tbodyY.innerHTML = years.map(y => `<tr><td>${y.id}</td><td><strong>${y.name}</strong></td></tr>`).join('');
+    tbodyY.innerHTML = years.map(y => `
+      <tr>
+        <td><code>${y.id}</code></td>
+        <td><strong>${y.name}</strong></td>
+        <td>
+          <button class="btn btn-warning" style="padding:3px 8px; font-size:12px; margin-right:5px;" onclick="editSetting('years', '${y.id}', '${y.name}')">Edit</button>
+          <button class="btn btn-danger" style="padding:3px 8px; font-size:12px;" onclick="deleteSetting('years', '${y.id}')">Del</button>
+        </td>
+      </tr>
+    `).join('');
 
     // Grades
     const tbodyG = document.querySelector('#tblGrades tbody');
-    tbodyG.innerHTML = grades.map(g => `<tr><td>${g.id}</td><td><strong>${g.name}</strong></td></tr>`).join('');
+    tbodyG.innerHTML = grades.map(g => `
+      <tr>
+        <td><code>${g.id}</code></td>
+        <td><strong>${g.name}</strong></td>
+        <td>
+          <button class="btn btn-warning" style="padding:3px 8px; font-size:12px; margin-right:5px;" onclick="editSetting('grades', '${g.id}', '${g.name}')">Edit</button>
+          <button class="btn btn-danger" style="padding:3px 8px; font-size:12px;" onclick="deleteSetting('grades', '${g.id}')">Del</button>
+        </td>
+      </tr>
+    `).join('');
 
     // Subjects
     const tbodyS = document.querySelector('#tblSubjects tbody');
-    tbodyS.innerHTML = subjects.map(s => `<tr><td>${s.id}</td><td><strong>${s.name}</strong></td></tr>`).join('');
+    tbodyS.innerHTML = subjects.map(s => `
+      <tr>
+        <td><code>${s.id}</code></td>
+        <td><strong>${s.name}</strong></td>
+        <td>
+          <button class="btn btn-warning" style="padding:3px 8px; font-size:12px; margin-right:5px;" onclick="editSetting('subjects', '${s.id}', '${s.name}')">Edit</button>
+          <button class="btn btn-danger" style="padding:3px 8px; font-size:12px;" onclick="deleteSetting('subjects', '${s.id}')">Del</button>
+        </td>
+      </tr>
+    `).join('');
 
     // Exam Types
     const tbodyT = document.querySelector('#tblExamTypes tbody');
-    tbodyT.innerHTML = types.map(t => `<tr><td>${t.id}</td><td><strong>${t.name}</strong></td></tr>`).join('');
+    tbodyT.innerHTML = types.map(t => `<tr><td><code>${t.id}</code></td><td><strong>${t.name}</strong></td></tr>`).join('');
   } catch (err) {
     console.error('Failed to load settings lists', err);
   }
 }
+
+window.deleteSetting = async function(type, id) {
+  const itemLabel = type === 'years' ? 'Academic Year' : type === 'grades' ? 'Grade' : 'Subject';
+  if (!confirm(`Are you sure you want to delete this ${itemLabel}? This action cannot be undone.`)) return;
+  try {
+    const res = await fetch(`/api/admin/${type}/${id}`, { method: 'DELETE' });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      alert(errData.error || `Failed to delete ${itemLabel}.`);
+      return;
+    }
+    loadAcademicSettings();
+    loadAllMetadata();
+  } catch (err) {
+    alert(`Error deleting ${itemLabel}.`);
+  }
+};
+
+window.editSetting = async function(type, id, oldName) {
+  const itemLabel = type === 'years' ? 'Academic Year' : type === 'grades' ? 'Grade' : 'Subject';
+  const newName = prompt(`Enter new name for this ${itemLabel}:`, oldName);
+  if (!newName || newName.trim() === '' || newName.trim() === oldName) return;
+  try {
+    const res = await fetch(`/api/admin/${type}/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: newName.trim() })
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      alert(errData.error || `Failed to update ${itemLabel}.`);
+      return;
+    }
+    loadAcademicSettings();
+    loadAllMetadata();
+  } catch (err) {
+    alert(`Error updating ${itemLabel}.`);
+  }
+};
 
 // ==========================================
 // SYSTEM BACKUPS & AUDIT LOGS

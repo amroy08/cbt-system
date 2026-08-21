@@ -34,6 +34,38 @@ router.post('/years', async (req, res) => {
   }
 });
 
+// 1b. DELETE ACADEMIC YEAR
+router.delete('/years/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const examCount = await Exam.countDocuments({ academic_year_id: id });
+    if (examCount > 0) {
+      return res.status(400).json({ error: 'Cannot delete. This Academic Year is linked to existing exams.' });
+    }
+    await AcademicYear.findByIdAndDelete(id);
+    await logEvent('DELETE_YEAR', req.session.adminId, `Deleted academic year ID ${id}`, req.ip);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 1c. UPDATE ACADEMIC YEAR
+router.put('/years/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { name } = req.body;
+    if (!name || name.trim() === '') {
+      return res.status(400).json({ error: 'Name is required' });
+    }
+    await AcademicYear.findByIdAndUpdate(id, { name: name.trim() });
+    await logEvent('UPDATE_YEAR', req.session.adminId, `Updated academic year ID ${id} to: ${name.trim()}`, req.ip);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // 2. GRADES
 router.get('/grades', async (req, res) => {
   try {
@@ -58,6 +90,38 @@ router.post('/grades', async (req, res) => {
   }
 });
 
+// 2b. DELETE GRADE
+router.delete('/grades/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const examCount = await Exam.countDocuments({ grade_id: id });
+    if (examCount > 0) {
+      return res.status(400).json({ error: 'Cannot delete. This Grade is linked to existing exams.' });
+    }
+    await Grade.findByIdAndDelete(id);
+    await logEvent('DELETE_GRADE', req.session.adminId, `Deleted grade ID ${id}`, req.ip);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 2c. UPDATE GRADE
+router.put('/grades/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { name } = req.body;
+    if (!name || name.trim() === '') {
+      return res.status(400).json({ error: 'Name is required' });
+    }
+    await Grade.findByIdAndUpdate(id, { name: name.trim() });
+    await logEvent('UPDATE_GRADE', req.session.adminId, `Updated grade ID ${id} to: ${name.trim()}`, req.ip);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // 3. SUBJECTS
 router.get('/subjects', async (req, res) => {
   try {
@@ -79,6 +143,38 @@ router.post('/subjects', async (req, res) => {
     res.json({ id: doc._id, name: doc.name });
   } catch (err) {
     res.status(500).json({ error: 'Failed to create subject (may already exist)' });
+  }
+});
+
+// 3b. DELETE SUBJECT
+router.delete('/subjects/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const examCount = await Exam.countDocuments({ subject_id: id });
+    if (examCount > 0) {
+      return res.status(400).json({ error: 'Cannot delete. This Subject is linked to existing exams.' });
+    }
+    await Subject.findByIdAndDelete(id);
+    await logEvent('DELETE_SUBJECT', req.session.adminId, `Deleted subject ID ${id}`, req.ip);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 3c. UPDATE SUBJECT
+router.put('/subjects/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { name } = req.body;
+    if (!name || name.trim() === '') {
+      return res.status(400).json({ error: 'Name is required' });
+    }
+    await Subject.findByIdAndUpdate(id, { name: name.trim() });
+    await logEvent('UPDATE_SUBJECT', req.session.adminId, `Updated subject ID ${id} to: ${name.trim()}`, req.ip);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
