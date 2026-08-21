@@ -93,17 +93,25 @@ router.post('/login', async (req, res) => {
     const durationMs = matchedExam.duration_minutes * 60 * 1000;
     const deadlineStr = new Date(Date.now() + durationMs).toISOString();
 
+    // Fetch and shuffle question IDs for this candidate
+    const questions = await Question.find({ exam_id: matchedExam._id }).lean();
+    const questionIds = questions.map(q => q._id);
+    for (let i = questionIds.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [questionIds[i], questionIds[j]] = [questionIds[j], questionIds[i]];
+    }
+
     const newAttempt = await Attempt.create({
       candidate_id: candidate._id,
       exam_id: matchedExam._id,
       start_time: nowStr,
       deadline: deadlineStr,
       status: 'In Exam',
-      last_activity_at: nowStr
+      last_activity_at: nowStr,
+      question_order: questionIds
     });
 
     // Initialize empty answers for all questions
-    const questions = await Question.find({ exam_id: matchedExam._id });
     for (const q of questions) {
       await Answer.create({
         attempt_id: newAttempt._id,
@@ -135,10 +143,11 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// 2. GET QUESTIONS (Never returns correct_answers!)
+// 2. GET QUESTIONS (Never returns correct_answers! Supports per-student shuffling order)
 router.get('/questions/:examId', async (req, res) => {
   try {
     const examId = req.params.examId;
+    const attemptId = req.query.attemptId;
     
     const exam = await Exam.findById(examId);
     if (!exam || exam.status !== 'Open') {
@@ -149,7 +158,34 @@ router.get('/questions/:examId', async (req, res) => {
       .sort({ question_number: 1 })
       .lean();
 
-    res.json(questions.map(q => ({
+    let sortedQuestions = questions;
+    
+    if (attemptId) {
+      const attempt = await Attempt.findById(attemptId);
+      if (attempt) {
+        if (!attempt.question_order || attempt.question_order.length === 0) {
+          const rawIds = questions.map(q => q._id);
+          for (let i = rawIds.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [rawIds[i], rawIds[j]] = [rawIds[j], rawIds[i]];
+          }
+          attempt.question_order = rawIds;
+          await attempt.save();
+        }
+        
+        const questionOrder = attempt.question_order.map(id => id.toString());
+        const questionsMap = {};
+        questions.forEach(q => {
+          questionsMap[q._id.toString()] = q;
+        });
+        
+        sortedQuestions = questionOrder
+          .map(id => questionsMap[id])
+          .filter(q => q !== undefined);
+      }
+    }
+
+    res.json(sortedQuestions.map(q => ({
       id: q._id.toString(),
       question_number: q.question_number,
       question_text: q.question_text,

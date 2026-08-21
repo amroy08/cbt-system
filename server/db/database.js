@@ -95,6 +95,7 @@ const attemptSchema = new mongoose.Schema({
   submitted_at: { type: String },
   score: { type: Number, default: 0 },
   last_activity_at: { type: String, required: true },
+  question_order: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Question' }],
   created_at: { type: Date, default: Date.now }
 });
 attemptSchema.index({ candidate_id: 1, exam_id: 1 }, { unique: true });

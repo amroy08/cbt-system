@@ -137,7 +137,7 @@
 
   function fetchQuestions() {
     var xhrQ = new XMLHttpRequest();
-    xhrQ.open('GET', '/api/student/questions/' + examId, true);
+    xhrQ.open('GET', '/api/student/questions/' + examId + '?attemptId=' + attemptId, true);
     xhrQ.onreadystatechange = function () {
       if (xhrQ.readyState === 4) {
         if (xhrQ.status === 200) {
