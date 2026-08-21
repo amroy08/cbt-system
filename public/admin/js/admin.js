@@ -281,6 +281,7 @@ let currentUploadFilename = '';
 function initImportPipeline() {
   const form = document.getElementById('formImportPaper');
   const alertBox = document.getElementById('importAlertBox');
+  const submitBtn = form.querySelector('button[type="submit"]');
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -301,6 +302,10 @@ function initImportPipeline() {
     formData.append('defaultMarks', defaultMarks);
 
     try {
+      submitBtn.disabled = true;
+      const originalBtnText = submitBtn.innerText;
+      submitBtn.innerText = 'Parsing paper...';
+
       alertBox.className = 'alert alert-success';
       alertBox.innerText = 'Parsing file, please wait...';
       alertBox.style.display = 'block';
@@ -310,6 +315,9 @@ function initImportPipeline() {
         body: formData
       });
       const data = await res.json();
+
+      submitBtn.disabled = false;
+      submitBtn.innerText = originalBtnText;
 
       if (data.success) {
         alertBox.style.display = 'none';
@@ -321,6 +329,8 @@ function initImportPipeline() {
         alertBox.innerText = data.error || 'Failed to parse file.';
       }
     } catch (err) {
+      submitBtn.disabled = false;
+      submitBtn.innerText = 'Upload & Parse Paper';
       alertBox.className = 'alert alert-danger';
       alertBox.innerText = 'Connection error during parsing.';
     }
