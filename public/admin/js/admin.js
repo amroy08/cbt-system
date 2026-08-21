@@ -155,6 +155,12 @@ function initExamCrud() {
         });
       }
 
+      if (!res.ok) {
+        const errorText = await res.text().catch(() => '');
+        alert('Server Error (' + res.status + '): ' + (errorText.substring(0, 200) || res.statusText));
+        return;
+      }
+
       const data = await res.json();
       if (data.success) {
         closeExamModal();
@@ -163,7 +169,7 @@ function initExamCrud() {
         alert(data.error || 'Failed to save exam.');
       }
     } catch (err) {
-      alert('Error saving exam.');
+      alert('Error saving exam: ' + err.message);
     }
   });
 }
