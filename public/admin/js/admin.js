@@ -122,10 +122,10 @@ function initExamCrud() {
     const id = document.getElementById('editExamId').value;
     
     const payload = {
-      academic_year_id: document.getElementById('examYear').value,
-      grade_id: document.getElementById('examGrade').value,
-      subject_id: document.getElementById('examSubject').value,
-      exam_type_id: document.getElementById('examType').value,
+      academic_year: document.getElementById('examYear').value,
+      grade: document.getElementById('examGrade').value,
+      subject: document.getElementById('examSubject').value,
+      exam_type: document.getElementById('examType').value,
       title: document.getElementById('examTitle').value,
       date: document.getElementById('examDate').value,
       duration_minutes: document.getElementById('examDuration').value,
@@ -211,10 +211,10 @@ window.editExam = async function(id) {
     document.getElementById('examModalTitle').innerText = 'Edit Exam';
     document.getElementById('editExamId').value = ex.id;
     
-    document.getElementById('examYear').value = ex.academic_year_id;
-    document.getElementById('examGrade').value = ex.grade_id;
-    document.getElementById('examSubject').value = ex.subject_id;
-    document.getElementById('examType').value = ex.exam_type_id;
+    document.getElementById('examYear').value = ex.academic_year;
+    document.getElementById('examGrade').value = ex.grade;
+    document.getElementById('examSubject').value = ex.subject;
+    document.getElementById('examType').value = ex.exam_type;
     document.getElementById('examTitle').value = ex.title;
     document.getElementById('examDate').value = ex.date;
     document.getElementById('examDuration').value = ex.duration_minutes;

@@ -348,22 +348,45 @@
         <div class="grid-2">
           <div class="form-group">
             <label for="examYear">Academic Year</label>
-            <select id="examYear" class="form-control" required></select>
+            <input type="text" id="examYear" class="form-control" placeholder="e.g. 2026-27" required>
           </div>
           <div class="form-group">
             <label for="examGrade">Grade</label>
-            <select id="examGrade" class="form-control" required></select>
+            <select id="examGrade" class="form-control" required>
+              <option value="" disabled selected>Select Grade</option>
+              <option value="Grade 1">Grade 1</option>
+              <option value="Grade 2">Grade 2</option>
+              <option value="Grade 3">Grade 3</option>
+              <option value="Grade 4">Grade 4</option>
+              <option value="Grade 5">Grade 5</option>
+              <option value="Grade 6">Grade 6</option>
+              <option value="Grade 7">Grade 7</option>
+              <option value="Grade 8">Grade 8</option>
+              <option value="Grade 9">Grade 9</option>
+              <option value="Grade 10">Grade 10</option>
+            </select>
           </div>
         </div>
 
         <div class="grid-2">
           <div class="form-group">
             <label for="examSubject">Subject</label>
-            <select id="examSubject" class="form-control" required></select>
+            <select id="examSubject" class="form-control" required>
+              <option value="Computer" selected>Computer</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Science">Science</option>
+              <option value="English">English</option>
+            </select>
           </div>
           <div class="form-group">
             <label for="examType">Exam Type</label>
-            <select id="examType" class="form-control" required></select>
+            <select id="examType" class="form-control" required>
+              <option value="" disabled selected>Select Type</option>
+              <option value="Unit Test 1">Unit Test 1</option>
+              <option value="Term 1">Term 1</option>
+              <option value="Unit Test 2">Unit Test 2</option>
+              <option value="Term 2">Term 2</option>
+            </select>
           </div>
         </div>
 

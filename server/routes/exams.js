@@ -81,10 +81,16 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 2. GET SINGLE EXAM (Exclude PIN Hash)
+// 2. GET SINGLE EXAM (Exclude PIN Hash, Populate Names)
 router.get('/:id', async (req, res) => {
   try {
-    const exam = await Exam.findById(req.params.id).lean();
+    const exam = await Exam.findById(req.params.id)
+      .populate('academic_year_id')
+      .populate('grade_id')
+      .populate('subject_id')
+      .populate('exam_type_id')
+      .lean();
+
     if (!exam) return res.status(404).json({ error: 'Exam not found' });
     
     res.json({
@@ -97,24 +103,24 @@ router.get('/:id', async (req, res) => {
       status: exam.status,
       instructions: exam.instructions,
       show_result_after_submit: exam.show_result_after_submit ? 1 : 0,
-      academic_year_id: exam.academic_year_id.toString(),
-      grade_id: exam.grade_id.toString(),
-      subject_id: exam.subject_id.toString(),
-      exam_type_id: exam.exam_type_id.toString()
+      academic_year: exam.academic_year_id ? exam.academic_year_id.name : '',
+      grade: exam.grade_id ? exam.grade_id.name : '',
+      subject: exam.subject_id ? exam.subject_id.name : '',
+      exam_type: exam.exam_type_id ? exam.exam_type_id.name : ''
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// 3. CREATE EXAM
+// 3. CREATE EXAM (Text names resolved to Database documents dynamically)
 router.post('/', async (req, res) => {
   try {
     const {
-      academic_year_id,
-      grade_id,
-      subject_id,
-      exam_type_id,
+      academic_year,
+      grade,
+      subject,
+      exam_type,
       title,
       date,
       duration_minutes,
@@ -126,7 +132,7 @@ router.post('/', async (req, res) => {
       show_result_after_submit
     } = req.body;
 
-    if (!academic_year_id || !grade_id || !subject_id || !exam_type_id || !title || !date || !duration_minutes || !total_marks || !pin) {
+    if (!academic_year || !grade || !subject || !exam_type || !title || !date || !duration_minutes || !total_marks || !pin) {
       return res.status(400).json({ error: 'Missing required exam fields' });
     }
 
@@ -134,13 +140,28 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Duration and Total Marks must be greater than 0.' });
     }
 
+    // Resolve MongoDB references
+    const { AcademicYear, Grade, Subject, ExamType: DbExamType } = require('../db/database');
+    
+    let yearDoc = await AcademicYear.findOne({ name: academic_year.trim() });
+    if (!yearDoc) yearDoc = await AcademicYear.create({ name: academic_year.trim() });
+
+    let gradeDoc = await Grade.findOne({ name: grade.trim() });
+    if (!gradeDoc) gradeDoc = await Grade.create({ name: grade.trim() });
+
+    let subjectDoc = await Subject.findOne({ name: subject.trim() });
+    if (!subjectDoc) subjectDoc = await Subject.create({ name: subject.trim() });
+
+    let typeDoc = await DbExamType.findOne({ name: exam_type.trim() });
+    if (!typeDoc) typeDoc = await DbExamType.create({ name: exam_type.trim() });
+
     const pinHash = await bcrypt.hash(pin.trim(), 10);
 
     const doc = await Exam.create({
-      academic_year_id,
-      grade_id,
-      subject_id,
-      exam_type_id,
+      academic_year_id: yearDoc._id,
+      grade_id: gradeDoc._id,
+      subject_id: subjectDoc._id,
+      exam_type_id: typeDoc._id,
       title: title.trim(),
       date,
       duration_minutes: parseInt(duration_minutes, 10),
@@ -160,14 +181,14 @@ router.post('/', async (req, res) => {
   }
 });
 
-// 4. UPDATE EXAM
+// 4. UPDATE EXAM (Text names resolved to Database documents dynamically)
 router.put('/:id', async (req, res) => {
   try {
     const {
-      academic_year_id,
-      grade_id,
-      subject_id,
-      exam_type_id,
+      academic_year,
+      grade,
+      subject,
+      exam_type,
       title,
       date,
       duration_minutes,
@@ -181,7 +202,7 @@ router.put('/:id', async (req, res) => {
 
     const examId = req.params.id;
 
-    if (!academic_year_id || !grade_id || !subject_id || !exam_type_id || !title || !date || !duration_minutes || !total_marks) {
+    if (!academic_year || !grade || !subject || !exam_type || !title || !date || !duration_minutes || !total_marks) {
       return res.status(400).json({ error: 'Missing required exam fields' });
     }
 
@@ -189,11 +210,26 @@ router.put('/:id', async (req, res) => {
       return res.status(400).json({ error: 'Duration and Total Marks must be greater than 0.' });
     }
 
+    // Resolve MongoDB references
+    const { AcademicYear, Grade, Subject, ExamType: DbExamType } = require('../db/database');
+    
+    let yearDoc = await AcademicYear.findOne({ name: academic_year.trim() });
+    if (!yearDoc) yearDoc = await AcademicYear.create({ name: academic_year.trim() });
+
+    let gradeDoc = await Grade.findOne({ name: grade.trim() });
+    if (!gradeDoc) gradeDoc = await Grade.create({ name: grade.trim() });
+
+    let subjectDoc = await Subject.findOne({ name: subject.trim() });
+    if (!subjectDoc) subjectDoc = await Subject.create({ name: subject.trim() });
+
+    let typeDoc = await DbExamType.findOne({ name: exam_type.trim() });
+    if (!typeDoc) typeDoc = await DbExamType.create({ name: exam_type.trim() });
+
     const updateFields = {
-      academic_year_id,
-      grade_id,
-      subject_id,
-      exam_type_id,
+      academic_year_id: yearDoc._id,
+      grade_id: gradeDoc._id,
+      subject_id: subjectDoc._id,
+      exam_type_id: typeDoc._id,
       title: title.trim(),
       date,
       duration_minutes: parseInt(duration_minutes, 10),
