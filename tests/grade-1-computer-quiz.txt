@@ -1,0 +1,25 @@
+Grade 1 Computer Quiz
+
+Q1. What is the physical part of a computer called?
+A) Software
+B) Hardware
+C) Logic
+D) Mind
+Answer: B
+Marks: 2
+
+Q2. Which of these is a machine?
+A) Tree
+B) Laptop
+C) Pencil
+D) Cat
+Correct Answer: B
+Marks: 2
+
+Q3. What do you use to type letters on a computer?
+A) Keyboard
+B) Mouse
+C) Printer
+D) Speaker
+Answer: A
+Marks: 1
