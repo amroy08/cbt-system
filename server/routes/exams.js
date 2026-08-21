@@ -254,20 +254,26 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// 5. DELETE EXAM
+// 5. DELETE EXAM (Cascade delete all associated questions, attempts, answers, and batches)
 router.delete('/:id', async (req, res) => {
   try {
     const examId = req.params.id;
-    // Check if any attempts exist
-    const attemptCount = await Attempt.countDocuments({ exam_id: examId });
-    if (attemptCount > 0) {
-      return res.status(400).json({ error: 'Cannot delete exam. Students have already attempted this exam.' });
-    }
+    const { Attempt, Answer, ImportBatch } = require('../db/database');
 
-    await Exam.findByIdAndDelete(examId);
+    // Find all attempts for this exam
+    const attempts = await Attempt.find({ exam_id: examId }).lean();
+    const attemptIds = attempts.map(a => a._id);
+
+    // Delete associated answers, attempts, questions, and import batches
+    await Answer.deleteMany({ attempt_id: { $in: attemptIds } });
+    await Attempt.deleteMany({ exam_id: examId });
     await Question.deleteMany({ exam_id: examId });
+    await ImportBatch.deleteMany({ exam_id: examId });
+
+    // Delete the exam document itself
+    await Exam.findByIdAndDelete(examId);
     
-    await logEvent('DELETE_EXAM', req.session.adminId, `Deleted exam ID ${examId}`, req.ip);
+    await logEvent('DELETE_EXAM', req.session.adminId, `Deleted exam ID ${examId} and all associated candidate results/questions.`, req.ip);
 
     res.json({ success: true });
   } catch (err) {

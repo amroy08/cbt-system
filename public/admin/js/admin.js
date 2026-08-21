@@ -236,12 +236,19 @@ window.editExam = async function(id) {
 };
 
 window.deleteExam = async function(id) {
-  if (!confirm('Are you sure you want to delete this exam? All associated questions will be deleted.')) return;
+  if (!confirm('Are you sure you want to delete this exam? All associated questions and candidate attempts will be permanently deleted.')) return;
   try {
     const res = await fetch(`/api/exams/${id}`, { method: 'DELETE' });
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      alert(errorData.error || 'Failed to delete exam. Server error.');
+      return;
+    }
     const data = await res.json();
     if (data.success) {
       loadExamsTable();
+      // Reload metadata list to update dropdowns across panels
+      loadAllMetadata();
     } else {
       alert(data.error || 'Failed to delete exam.');
     }
