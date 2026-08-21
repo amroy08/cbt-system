@@ -494,7 +494,7 @@ function initMonitoring() {
 }
 
 function loadMonitorExamDropdown() {
-  populateSelect('monitorExamSelect', examsList.filter(e => e.status === 'Open'), '-- Select Open Exam --');
+  populateSelect('monitorExamSelect', examsList.filter(e => e.status === 'Open').map(e => ({ id: e.id, name: `${e.title} (${e.grade} - ${e.subject})` })), '-- Select Open Exam --');
   // clear tbl on tab switch
   document.getElementById('tblMonitor').style.display = 'none';
   document.getElementById('monitorStats').style.display = 'none';
@@ -605,7 +605,7 @@ function initResultsDashboard() {
 }
 
 function loadResultsExamDropdown() {
-  populateSelect('resultsExamSelect', examsList, '-- Select Exam --');
+  populateSelect('resultsExamSelect', examsList.map(e => ({ id: e.id, name: `${e.title} (${e.grade} - ${e.subject})` })), '-- Select Exam --');
   document.getElementById('tblResults').style.display = 'none';
   document.getElementById('btnExportCSV').style.display = 'none';
 }
